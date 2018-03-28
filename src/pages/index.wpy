@@ -1,0 +1,153 @@
+<template>
+  <view class="page">
+    <view class="section">
+      <image mode="{{image.mode}}" src="{{image.src}}"></image>
+      <text class="title">FASHION WITH REACH</text>
+    </view>
+    <view class="text d-flex f-wrap-no a-items-center m-t-25">
+      <view class="t-color-black text-block1 m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+        <text>全部新品</text>
+      </view>
+      <view class="t-color-black text-block2 m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+        <text>新品活动</text>
+      </view>
+    </view>
+    <view class="card" wx:for-items="{{products}}" wx:for-index="index" wx:for-item="product" wx:key="id">
+      <navigator url="{{'product?id='+product.id}}" open-type="navigateTo" hover-class="navigator-hover">
+        <view class="text d-flex f-wrap-no a-items-center m-t-25">
+          <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+            <image class="product-image" mode="scaleToFill" src="{{product.first_image}}"></image>
+          </view>
+          <view class="t-color-black text-block f-grow-5 a-self-stretch d-flex f-direction-column">
+            <text class="t-size-35 m-t-25 m-l-20">{{product.name}}</text>
+            <text class="product-price m-l-20">
+              {{product.price}}
+            </text>
+          </view>
+        </view>
+      </navigator>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { login } from '../libs/login'
+  import ProductAPI from '../api/products'
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '小桃饰品'
+    }
+
+    data = {
+      userUrl: '',
+      userName: '',
+      systemHeight: '',
+      bannerWidth: '',
+      bannerHeight: '',
+      contentNoneHeight: '',
+      image: {
+        mode: 'aspectFit',
+        src: '../images/timg.jpeg'
+      },
+      productsMeta: null,
+      products: []
+    }
+
+    methods = {
+      bindChange: function(e) {
+        // const val = e.detail.value
+      }
+    }
+    onLoad () {
+      wepy.getSystemInfo({
+        success: (res) => {
+          console.log('获取系统参数成功')
+          this.bannerWidth = res.windowWidth
+          this.bannerHeight = res.windowWidth * 5 / 9
+          this.contentNoneHeight = res.windowHeight - res.windowWidth * 5 / 9 - 60
+          this.systemHeight = res.windowHeight
+          this.$broadcast('window-width', res.windowWidth)
+        },
+        fail: (res) => {
+          console.log('获取系统参数失败')
+        }
+      })
+
+      setTimeout(() => {
+        this.loading = false
+        this.$apply()
+      }, 3000)
+
+      setTimeout(() => {
+        login().then(this.refreshData.bind(this))
+      }, 2000)
+
+      if (this.$parent.globalData.userInfo) {
+        this.userName = this.$parent.globalData.userInfo.nickName
+        this.userUrl = this.$parent.globalData.userInfo.avatarUrl
+        this.$apply()
+      } else if (this.data.canIUse) {
+        wepy.userInfoReadyCallback = (res) => {
+          this.userName = res.userInfo.nickName
+          this.userUrl = res.userInfo.avatarUrl
+          this.$apply()
+        }
+      } else {
+        wepy.getUserInfo({
+          success: (res) => {
+            this.$parent.globalData.userInfo = res.userInfo
+            this.userName = res.userInfo.nickName
+            this.userUrl = res.userInfo.avatarUrl
+            this.$apply()
+          }
+        })
+      }
+    }
+    refreshData () {
+      let self = this
+      wepy.showLoading({
+        title: '加载中...'
+      })
+      ProductAPI.all().then((resp) => {
+        console.log(resp)
+        self.productsMeta = resp.data.meta
+        self.products = resp.data.data
+        self.loading = false
+        self.$apply()
+        wepy.hideLoading()
+      })
+    }
+  }
+</script>
+
+<style lang="less">
+  .section {
+    text-align: center
+  }
+  .title {
+    font-size: 1.3rem;
+  }
+  .text-block1 {
+    line-height: 200rpx;
+    background-color: beige;
+  }
+  .text-block2 {
+    line-height: 200rpx;
+    background-color: bisque;
+    margin-right: 10rpx;
+  }
+  .product-image {
+    width: 200rpx;
+    height: 300rpx;
+    background-color: gainsboro;
+  }
+  .product-price {
+    margin-top: 200rpx;
+    color: rosybrown;
+  }
+  .icon {
+    height: 100rpx;
+    width: 100rpx;
+  }
+</style>

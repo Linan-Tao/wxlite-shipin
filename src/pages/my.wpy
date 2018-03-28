@@ -1,0 +1,96 @@
+<template>
+  <block>
+    <view class="banner">
+      <image src="../images/timg.jpeg" mode="scaleToFill" class="bannerImage"></image>
+      <view class="userInfo">
+        <image src="{{userUrl}}" mode="scaleToFill" class="userImage"></image>
+        <text class="text-block t-color-brown">{{userName}}</text>
+      </view>
+    </view>
+    <view class="d-flex f-wrap-no a-items-center justify-content-around m-t-25 t-size-35">
+      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">全部</text></view>
+      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">待付款</text></view>
+      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">已发货</text></view>
+      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">已完成</text></view>
+    </view>
+    <view class="content d-flex f-wrap-no a-items-center justify-content-center m-t-25 t-size-25">
+      <view class="f-grow-1 f-direction-column center">
+        <image src="../images/cupons.png" mode="scaleToFill" class="icon text-block"></image>
+        <text class="t-color-brown text-block">我的优惠券</text>
+      </view>
+      <view class="f-grow-1 f-direction-column center">
+        <image src="../images/addree.png" mode="scaleToFill" class="icon text-block"></image>
+        <text class="t-color-brown text-block">收货地址</text>
+      </view>
+      <view class="f-grow-1 f-direction-column center">
+        <image src="../images/integral.png" mode="scaleToFill" class="icon text-block"></image>
+        <text class="t-color-brown text-block">我的积分</text>
+      </view>
+      <view class="f-grow-1 f-direction-column center">
+        <image src="../images/question.png" mode="scaleToFill" class="icon text-block"></image>
+        <text class="t-color-brown text-block">常见问题</text>
+      </view>
+    </view>
+  </block>
+</template>
+<script>
+import wepy from 'wepy'
+export default class Cart extends wepy.page {
+  data = {
+    userUrl: '',
+    userName: ''
+  }
+  onLoad () {
+    if (this.$parent.globalData.userInfo) {
+      this.userName = this.$parent.globalData.userInfo.nickName
+      this.userUrl = this.$parent.globalData.userInfo.avatarUrl
+      this.$apply()
+    } else if (this.data.canIUse) {
+      wepy.userInfoReadyCallback = (res) => {
+        this.userName = res.userInfo.nickName
+        this.userUrl = res.userInfo.avatarUrl
+        this.$apply()
+      }
+    } else {
+      wepy.getUserInfo({
+        success: (res) => {
+          this.$parent.globalData.userInfo = res.userInfo
+          this.userName = res.userInfo.nickName
+          this.userUrl = res.userInfo.avatarUrl
+          this.$apply()
+        }
+      })
+    }
+  }
+}
+</script>
+<style lang="less">
+  .bannerImage {
+    width: 100%;
+    height: 400rpx;
+  }
+  .userInfo {
+    position: fixed;
+    top: 150rpx;
+    left: 350rpx;
+  }
+  .userImage {
+    height: 100rpx;
+    width: 100rpx;
+    border-radius: 50rpx;
+    display: block;
+  }
+  .t-color-brown {
+    color: rosybrown !important;
+  }
+  .center {
+    text-align: center;
+  }
+  .icon {
+    width: 80rpx;
+    height: 80rpx;
+    margin-left: 50rpx;
+    margin-top: 15rpx;
+    display: block;
+  }
+</style>

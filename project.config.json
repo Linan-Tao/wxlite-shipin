@@ -1,0 +1,13 @@
+{
+  "description": "shipin wxlite project",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "appid": "wx74b81eb7ea7f8ae7",
+  "projectname": "shipin",
+  "miniprogramRoot": "./dist"
+}
