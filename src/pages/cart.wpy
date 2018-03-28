@@ -5,18 +5,18 @@
         <image src="{{selectedCartIds.indexOf(cart.id) < 0 ? '../images/check.png' : '../images/checked.png'}}" class="icon" bindtap="selectedProduct({{cart.id}})"/>
       </view>
       <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-        <image src="{{cart.product.image}}" class="modelImage"/>
+        <image src="{{cart.product.first_image}}" class="modelImage"/>
       </view>
       <view class="t-color-black text-block m-l-10 f-grow-4 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
         <text class="block">{{cart.product.name}}</text>
         <text class="block">{{cart.product.price}}</text>
         <view class="d-flex">
           <button type="default" size="mini" class="f-grow-1"> - </button>
-          <text class="f-grow-2 number">{{cart.number}}</text>
+          <text class="f-grow-2 number">{{cart.amount}}</text>
           <button type="default" size="mini" class="f-grow-1"> + </button>
         </view>
       </view>
-      <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+      <view bindtap="deleteCart({{cart.id}})" class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
         <image src="../images/delete.png" class="icon"/>
       </view>
     </view>
@@ -27,35 +27,13 @@
 </template>
 <script>
 import wepy from 'wepy'
+import ShoppingCartAPI from '../api/shopping_carts'
 export default class Cart extends wepy.page {
   config = {
     navigationBarTitleText: '购物车'
   }
   data = {
-    carts: [
-      {
-        id: 1,
-        product: {
-          id: 1,
-          name: '真丝波点衬衫',
-          image: '../images/timg.jpeg',
-          price: 100
-        },
-        number: 2,
-        checked: false
-      },
-      {
-        id: 2,
-        product: {
-          id: 2,
-          name: '真丝波点衬衫',
-          image: '../images/timg.jpeg',
-          price: 300
-        },
-        number: 1,
-        checked: false
-      }
-    ],
+    carts: [],
     selectedCartIds: []
   }
   methods = {
@@ -67,7 +45,33 @@ export default class Cart extends wepy.page {
         this.selectedCartIds.splice(cartIndex, 1)
       }
       // console.log(this.selectedCartIds)
+    },
+    deleteCart: function (cartId) {
+      ShoppingCartAPI.destroyShoppingCart(cartId).then((resp) => {
+        // console.log(resp)
+        wepy.showToast({
+          title: '删除成功',
+          icon: 'success',
+          duration: 2000
+        })
+        this.loadShoppingCart()
+      })
     }
+  }
+  onLoad (options) {
+    this.loadShoppingCart()
+  }
+  loadShoppingCart () {
+    /* 加载 */
+    wepy.showLoading({
+      title: '努力加载中...'
+    })
+    ShoppingCartAPI.all().then((resp) => {
+      wepy.hideLoading()
+      // console.log(resp)
+      this.carts = resp.data.data
+      this.$apply()
+    })
   }
 }
 </script>

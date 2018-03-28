@@ -34,6 +34,10 @@ const post = (...args) => {
   return _http('POST', ...args)
 }
 
+const destroy = (...args) => {
+  return _http('DELETE', ...args)
+}
+
 const setToken = (newToken) => {
   if (newToken) {
     wx.setStorage({ key: 'token', data: newToken })
@@ -44,4 +48,4 @@ const setToken = (newToken) => {
   }
 }
 
-export default { setToken, get, put, post }
+export default { setToken, get, put, post, destroy }

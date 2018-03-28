@@ -23,17 +23,19 @@
           <text>剩余:{{product.stock}}</text>
         </view>
       </view>
-      <view class="text content productAttribute d-flex f-wrap-no m-t-25" catchtap="showModal">
+      <!-- <view class="text content productAttribute d-flex f-wrap-no m-t-25" catchtap="showModal">
         <view class="t-color-black text-block m-l-10 f-grow-7 a-self-stretch d-flex f-direction-column">
           <text>选择尺码: {{selectedSize == null ? '' : selectedSize}}</text>
         </view>
         <view class="t-color-black text-block f-grow-1 a-self-stretch d-flex f-direction-column">
           <image src="../images/right.png" class="icon"/>
         </view>
+      </view> -->
+      <view class="productAttribute">
+        <text class="t-color-red m-l-30" wx:for-items="{{product.tag_list}}" wx:for-index="index" wx:for-item="tag" wx:key="index">{{tag}}</text>
       </view>
       <view class="productDetail">
-        <text>商品详细</text>
-        <!-- <text>{{product.content}}</text> -->
+        <text class="t-size-40">商品详细</text>
         <template is="wxParse" data="{{wxParseData:dkcontent.nodes}}"/>  
       </view>   
     </view>
@@ -63,6 +65,7 @@
 <script>
   import wepy from 'wepy'
   import ProductAPI from '../api/products'
+  import ShoppingCartAPI from '../api/shopping_carts'
   import WxParse from '../wxParse/wxParse'
   export default class Product extends wepy.page {
     data = {
@@ -83,19 +86,14 @@
         this.selectedSize = size
       },
       addCart: function () {
-        if (this.selectedSize) {
+        ShoppingCartAPI.createShoppingCart(this.product.id).then((resp) => {
+          console.log(resp)
           wepy.showToast({
             title: '加入购物车',
             icon: 'success',
             duration: 2000
           })
-        } else {
-          wepy.showToast({
-            title: '请先选择尺码',
-            icon: 'warn',
-            duration: 2000
-          })
-        }
+        })
       }
     }
     onLoad (options) {
@@ -127,7 +125,7 @@
     background-color: #eeeeee;
     width: 100%;
     height: 100%;
-    position: fixed;
+    // position: fixed;
     top: 0;
     left: 0;
     // background: #000;
@@ -170,6 +168,7 @@
   }
   .productDetail {
     color: #000;
+    background-color: #fff;
     display: block;
   }
   .productAttribute {
