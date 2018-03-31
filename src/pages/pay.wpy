@@ -24,7 +24,7 @@
     </view>
     <view class="footer d-flex">
       <text class="f-grow-5 m-l-20">应付:{{pay}}元</text>
-      <button type="primary" class="f-grow-1" bindtap=""> 提交订单</button>
+      <button type="primary" class="f-grow-1" bindtap="submitOrder"> 提交订单</button>
     </view>
   </view>
 </template>
@@ -32,6 +32,8 @@
 import wepy from 'wepy'
 import ShoppingCartAPI from '../api/shopping_carts'
 import AddressBookAPI from '../api/address_book'
+import OrderAPI from '../api/order'
+import MD5Util from '../libs/md5'
 export default class Pay extends wepy.page {
   config = {
     navigationBarTitleText: '提交订单',
@@ -46,6 +48,29 @@ export default class Pay extends wepy.page {
     editAddressBook: function () {
       wepy.navigateTo({
         url: 'address_book?id=' + this.address_book.id
+      })
+    },
+    submitOrder: function () {
+      var cartIds = this.carts.map(sc => sc.id)
+      OrderAPI.createOrder({address_book_id: this.address_book.id, shopping_cart_ids: cartIds.join(',')}).then((res) => {
+        var sign = ''
+        var timestamp = (new Date()).getTime().toString()
+        var signA = 'appId=' + res.data.appId + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepay_id + '&signType=MD5&timeStamp=' + timestamp
+        var signB = signA + '&key=a77105af5cf2346e6646abc55c3da026'
+        sign = MD5Util.MD5(signB).toUpperCase()
+        wepy.requestPayment({
+          'timeStamp': timestamp,
+          'nonceStr': res.data.nonce_str,
+          'package': 'prepay_id=' + res.data.prepay_id,
+          'signType': 'MD5',
+          'paySign': sign,
+          'success': function(res) {
+            console.log(res)
+          },
+          'fail': function(res) {
+            console.log(res)
+          }
+        })
       })
     }
   }
