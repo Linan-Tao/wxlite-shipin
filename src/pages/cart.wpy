@@ -1,8 +1,8 @@
 <template>
   <block>
-    <view class="d-flex m-t-15 f-wrap-no a-items-center" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
+    <view class="d-flex m-t-15 f-wrap-no a-items-center cart" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
       <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-        <image src="{{selectedCartIds.indexOf(cart.id) < 0 ? '../images/check.png' : '../images/checked.png'}}" class="icon" bindtap="selectedProduct({{cart.id}})"/>
+        <image src="{{cart.icon_url}}" class="icon" bindtap="selectedProduct({{cart}})"/>
       </view>
       <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
         <image src="{{cart.product.first_image}}" class="modelImage"/>
@@ -20,8 +20,9 @@
         <image src="../images/delete.png" class="icon"/>
       </view>
     </view>
-    <view class="footer">
-      <button type="primary"> 买啦</button>
+    <view class="footer d-flex">
+      <text class="f-grow-5">商品总价:{{selectedFee}}元</text>
+      <button type="primary" size="mini" class="f-grow-1" bindtap="goPay"> 买啦</button>
     </view>
   </block>
 </template>
@@ -30,21 +31,34 @@ import wepy from 'wepy'
 import ShoppingCartAPI from '../api/shopping_carts'
 export default class Cart extends wepy.page {
   config = {
-    navigationBarTitleText: '购物车'
+    navigationBarTitleText: '购物车',
+    backgroundColor: '#eeeeee'
   }
   data = {
     carts: [],
-    selectedCartIds: []
+    selectedCarts: [],
+    selectedFee: 0
   }
   methods = {
-    selectedProduct: function (cartId) {
-      var cartIndex = this.selectedCartIds.indexOf(cartId)
+    selectedProduct: function (cart) {
+      var cartIndex = this.selectedCarts.findIndex(c => { return c.id === cart.id })
+      var iconCartIndex = this.carts.findIndex(c => { return c.id === cart.id })
       if (cartIndex < 0) {
-        this.selectedCartIds.push(cartId)
+        this.carts[iconCartIndex].icon_url = '../images/checked.png'
+        this.selectedCarts.push(cart)
       } else {
-        this.selectedCartIds.splice(cartIndex, 1)
+        this.carts[iconCartIndex].icon_url = '../images/check.png'
+        this.selectedCarts.splice(cartIndex, 1)
       }
-      // console.log(this.selectedCartIds)
+      if (this.selectedCarts.length === 1) {
+        this.selectedFee = this.selectedCarts[0].price * this.selectedCarts[0].amount
+      } else if (this.selectedCarts.length === 0) {
+        this.selectedFee = 0
+      } else {
+        this.selectedFee = this.selectedCarts.reduce((prev, curr) => prev.price * prev.amount + curr.price * curr.amount)
+      }
+      console.log(this.selectedCarts)
+      this.$apply()
     },
     deleteCart: function (cartId) {
       ShoppingCartAPI.destroyShoppingCart(cartId).then((resp) => {
@@ -56,12 +70,20 @@ export default class Cart extends wepy.page {
         })
         this.loadShoppingCart()
       })
+    },
+    goPay: function () {
+      var ids = this.selectedCarts.map(sc => sc.id)
+      wepy.navigateTo({
+        url: 'pay?ids=' + ids
+      })
     }
   }
   onLoad (options) {
     this.loadShoppingCart()
   }
   loadShoppingCart () {
+    this.selectedCarts = []
+    this.selectedFee = 0
     /* 加载 */
     wepy.showLoading({
       title: '努力加载中...'
@@ -70,12 +92,19 @@ export default class Cart extends wepy.page {
       wepy.hideLoading()
       // console.log(resp)
       this.carts = resp.data.data
+      this.carts.forEach(c => {
+        c.icon_url = '../images/check.png'
+      })
       this.$apply()
     })
   }
 }
 </script>
 <style lang="less">
+  .cart {
+    background-color: #fff;
+    padding: 10rpx;
+  }
   .icon {
     width: 50rpx;
     height: 50rpx;

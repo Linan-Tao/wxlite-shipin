@@ -1,0 +1,111 @@
+<template>
+  <view>
+    <view class="d-flex a-items-center">
+      <view class="f-grow-5" bindtap="editAddressBook">
+        <view wx:if="{{address_book.id}}" class="m-l-30">
+          <text class="address_book">{{address_book.name + ' | ' + address_book.mobile}}</text>
+          <text class="address_book">{{address_book.detail_address}}</text>
+        </view>
+        <view wx:else class="m-l-80"> 请添加收货地址 </view>
+      </view>
+      <view class="f-grow-1"><image src="../images/right.png" class="icon"/></view>
+    </view>
+    <view class="d-flex m-t-15 f-wrap-no a-items-center cart" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
+      <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+        <image src="{{cart.product.first_image}}" class="modelImage"/>
+      </view>
+      <view class="t-color-black text-block m-l-10 f-grow-4 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+        <text class="block">{{cart.product.name}}</text>
+        <text class="block">数量:{{cart.amount}}</text>
+      </view>
+      <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+        <text class="block">{{cart.product.price}}</text>
+      </view>
+    </view>
+    <view class="footer d-flex">
+      <text class="f-grow-5 m-l-20">应付:{{pay}}元</text>
+      <button type="primary" class="f-grow-1" bindtap=""> 提交订单</button>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import ShoppingCartAPI from '../api/shopping_carts'
+import AddressBookAPI from '../api/address_book'
+export default class Pay extends wepy.page {
+  config = {
+    navigationBarTitleText: '提交订单',
+    backgroundColor: '#eeeeee'
+  }
+  data = {
+    carts: [],
+    address_book: {},
+    pay: 0
+  }
+  methods = {
+    editAddressBook: function () {
+      wepy.navigateTo({
+        url: 'address_book?id=' + this.address_book.id
+      })
+    }
+  }
+  onLoad (options) {
+    this.loadShoppingCart()
+    this.loadAddresBook()
+  }
+  loadShoppingCart () {
+    /* 加载 */
+    wepy.showLoading({
+      title: '努力加载中...'
+    })
+    console.log(this.$wxpage.options.ids)
+    ShoppingCartAPI.find(this.$wxpage.options.ids).then((resp) => {
+      wepy.hideLoading()
+      // console.log(resp)
+      this.carts = resp.data.data
+      // console.log(this.carts)
+      this.carts.forEach(c => {
+        this.pay += c.amount * c.price
+      })
+      this.$apply()
+    })
+  }
+  loadAddresBook () {
+    AddressBookAPI.all().then((resp) => {
+      if (resp.data) {
+        this.address_book = resp.data
+      }
+      this.$apply()
+    })
+  }
+}
+</script>
+<style lang="less">
+  .cart {
+    background: #fff;
+  }
+  .address_book {
+    line-height: 100rpx;
+    display: block;
+  }
+  .icon {
+    width: 50rpx;
+    height: 50rpx;
+    margin-top: 15rpx;
+  }
+  .modelImage {
+    width: 200rpx;
+    height: 200rpx;
+    margin-top: 15rpx;    
+  }
+  .footer {
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 2000;
+    background: #fff;
+    padding-top: 20rpx;
+  }
+</style>

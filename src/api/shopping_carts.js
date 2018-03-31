@@ -4,6 +4,10 @@ const all = () => {
   return http.get('/shopping_carts')
 }
 
+const find = (cart_ids) => {
+  return http.get('/shopping_carts?ids=' + cart_ids)
+}
+
 const createShoppingCart = (product_id) => {
   return http.post(`/shopping_carts`, {product_id: product_id, amount: 1})
 }
@@ -17,7 +21,8 @@ const destroyShoppingCart = (cart_id) => {
 
 export default {
   all,
-  createShoppingCart,
+  find,
+  createShoppingCart,    
   destroyShoppingCart
 }
 
