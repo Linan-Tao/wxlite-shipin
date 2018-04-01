@@ -1,64 +1,66 @@
 <template>
   <block>
-    <import src="../wxParse/wxParse.wxml"/>  
-    <view class="product" bindtap="hideModal" style="opacity: {{showModalStatus ? 0.5 : 1}}">
-      <view>
-        <swiper indicator-dots="{{true}}">
-          <block wx:for="{{product.images}}" wx:key="index">
-            <swiper-item>
-              <image src="{{item}}" class="slide-image" width="355" height="150"/>
-            </swiper-item>
-          </block>
-        </swiper>
-      </view>
-      <view class="content">
-        <text class="productName m-t-25 m-l-30">{{product.name}}</text>
-        <text class="productPrice m-t-25 m-l-30">{{product.price}}</text>
-      </view>
-      <view class="text content productAttribute d-flex f-wrap-no a-items-center m-t-25">
-        <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-          <text>运费:{{product.delivery_fee}}</text>
+    <import src="../wxParse/wxParse.wxml"/>
+    <view class="body">
+      <view class="product" bindtap="hideModal" style="opacity: {{showModalStatus ? 0.5 : 1}}">
+        <view>
+          <swiper indicator-dots="{{true}}">
+            <block wx:for="{{product.images}}" wx:key="index">
+              <swiper-item>
+                <image src="{{item}}" class="slide-image" width="355" height="150"/>
+              </swiper-item>
+            </block>
+          </swiper>
         </view>
-        <view class="t-color-black text-block f-grow-1 a-self-stretch d-flex f-direction-column">
-          <text>剩余:{{product.stock}}</text>
+        <view class="content">
+          <text class="productName m-t-25 m-l-30">{{product.name}}</text>
+          <text class="productPrice m-t-25 m-l-30">{{product.price}}</text>
         </view>
-      </view>
-      <!-- <view class="text content productAttribute d-flex f-wrap-no m-t-25" catchtap="showModal">
-        <view class="t-color-black text-block m-l-10 f-grow-7 a-self-stretch d-flex f-direction-column">
-          <text>选择尺码: {{selectedSize == null ? '' : selectedSize}}</text>
+        <view class="text content productAttribute d-flex f-wrap-no a-items-center m-t-25">
+          <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+            <text>运费:{{product.delivery_fee}}</text>
+          </view>
+          <view class="t-color-black text-block f-grow-1 a-self-stretch d-flex f-direction-column">
+            <text>剩余:{{product.stock}}</text>
+          </view>
         </view>
-        <view class="t-color-black text-block f-grow-1 a-self-stretch d-flex f-direction-column">
-          <image src="../images/right.png" class="icon"/>
+        <!-- <view class="text content productAttribute d-flex f-wrap-no m-t-25" catchtap="showModal">
+          <view class="t-color-black text-block m-l-10 f-grow-7 a-self-stretch d-flex f-direction-column">
+            <text>选择尺码: {{selectedSize == null ? '' : selectedSize}}</text>
+          </view>
+          <view class="t-color-black text-block f-grow-1 a-self-stretch d-flex f-direction-column">
+            <image src="../images/right.png" class="icon"/>
+          </view>
+        </view> -->
+        <view class="productAttribute">
+          <text class="t-color-red m-l-30" wx:for-items="{{product.tag_list}}" wx:for-index="index" wx:for-item="tag" wx:key="index">{{tag}}</text>
         </view>
-      </view> -->
-      <view class="productAttribute">
-        <text class="t-color-red m-l-30" wx:for-items="{{product.tag_list}}" wx:for-index="index" wx:for-item="tag" wx:key="index">{{tag}}</text>
-      </view>
-      <view class="productDetail">
-        <text class="t-size-40">商品详细</text>
-        <template is="wxParse" data="{{wxParseData:dkcontent.nodes}}"/>  
-      </view>   
-    </view>
-    <view animation="{{animationData}}" class="commodity_attr_box" wx:if="{{showModalStatus}}">
-      <view class="text content productAttribute d-flex f-wrap-no a-items-center">
-        <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-          <image src="{{product.images[0]}}" class="modelImage"/>
-        </view>
-        <view class="t-color-black text-block f-grow-7 a-self-stretch d-flex f-direction-column">
-          <text>{{product.name}}</text>
-          <text>{{product.price}}</text>
+        <view class="productDetail">
+          <text class="t-size-40">商品详细</text>
+          <template is="wxParse" data="{{wxParseData:dkcontent.nodes}}"/>
         </view>
       </view>
-      <view class="m-t-15">
-        <text class="block m-l-15 t-size-35">尺码</text>
-        <button type="{{selectedSize == 'S' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('S')"> S </button>
-        <button type="{{selectedSize == 'M' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('M')"> M </button>
-        <button type="{{selectedSize == 'L' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('L')"> L </button>
+      <view animation="{{animationData}}" class="commodity_attr_box" wx:if="{{showModalStatus}}">
+        <view class="text content productAttribute d-flex f-wrap-no a-items-center">
+          <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+            <image src="{{product.images[0]}}" class="modelImage"/>
+          </view>
+          <view class="t-color-black text-block f-grow-7 a-self-stretch d-flex f-direction-column">
+            <text>{{product.name}}</text>
+            <text>{{product.price}}</text>
+          </view>
+        </view>
+        <view class="m-t-15">
+          <text class="block m-l-15 t-size-35">尺码</text>
+          <button type="{{selectedSize == 'S' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('S')"> S </button>
+          <button type="{{selectedSize == 'M' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('M')"> M </button>
+          <button type="{{selectedSize == 'L' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('L')"> L </button>
+        </view>
+        <button type="default" bindtap="addCart">加入购物车</button>
       </view>
-      <button type="default" bindtap="addCart"> 加入购物车 </button>
     </view>
     <view class="footer">
-      <button type="default" bindtap="addCart"> 加入购物车 </button>
+      <button type="default" bindtap="addCart">加入购物车</button>
     </view>
   </block>
 </template>
@@ -121,69 +123,82 @@
 </script>
 <style lang="less">
   @import '../wxParse/wxParse.wxss';
-  .product {
-    background-color: #eeeeee;
-    width: 100%;
-    height: 100%;
-    // position: fixed;
-    top: 0;
-    left: 0;
-    // background: #000;
-    // opacity: 0.2;
-    overflow: hidden;
-    z-index: 1000;
-    color: #fff;
+  .body {
+    // padding: 10rpx;
+    padding: 0 10rpx 140rpx 10rpx;
+    .product {
+      background-color: #eeeeee;
+      width: 100%;
+      height: 100%;
+      // position: fixed;
+      top: 0;
+      left: 0;
+      // background: #000;
+      // opacity: 0.2;
+      overflow: hidden;
+      z-index: 1000;
+      color: #fff;
+    }
+    .commodity_attr_box {
+      width: 100%;
+      overflow: hidden;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      z-index: 2000;
+      background: #fff;
+      padding-top: 20rpx;
+    }
+    .content {
+      background-color: white;
+    }
+    .productName {
+      display: block;
+      font-size: 40rpx;
+      color: #000;
+    }
+    .productPrice {
+      display: block;
+      color: rosybrown;
+    }
+    .productDetail {
+      color: #000;
+      background-color: #fff;
+      display: block;
+    }
+    .productAttribute {
+      color: grey;
+      font-size: 30rpx;
+      line-height: 80rpx;
+    }
+    .icon {
+      width: 50rpx;
+      height: 50rpx;
+      margin-top: 15rpx;
+    }
+    .modelImage {
+      width: 150rpx;
+      height: 150rpx;
+      margin-top: 15rpx;
+    }
   }
   .footer {
     width: 100%;
-    overflow: hidden;
+    // overflow: hidden;
     position: fixed;
     bottom: 0;
     left: 0;
-    z-index: 1000;
+    // z-index: 1000;
     background: #fff;
-    padding-top: 20rpx;    
-  }
-  .commodity_attr_box {
-    width: 100%;
-    overflow: hidden;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 2000;
-    background: #fff;
-    padding-top: 20rpx;
-  }
-  .content {
-    background-color: white;
-  }
-  .productName {
-    display: block;
-    font-size: 40rpx;
-    color: #000;
-  }
-  .productPrice {
-    display: block;
-    color: rosybrown;
-  }
-  .productDetail {
-    color: #000;
-    background-color: #fff;
-    display: block;
-  }
-  .productAttribute {
-    color: grey;
-    font-size: 30rpx;
-    line-height: 80rpx;
-  }
-  .icon {
-    width: 50rpx;
-    height: 50rpx;
-    margin-top: 15rpx;
-  }
-  .modelImage {
-    width: 150rpx;
-    height: 150rpx;
-    margin-top: 15rpx;    
+    padding-top: 10rpx;
+    button {
+      border-radius: unset;
+      margin: 0 10rpx 10rpx 10rpx;
+      padding: unset;
+      border: 1rpx solid #C9C9C9;
+      &:after {
+        display: none;
+      }
+    }
   }
 </style>

@@ -1,13 +1,15 @@
 {
-  "description": "shipin wxlite project",
-  "setting": {
-    "urlCheck": true,
-    "es6": false,
-    "postcss": false,
-    "minified": false
-  },
-  "compileType": "miniprogram",
-  "appid": "wx74b81eb7ea7f8ae7",
-  "projectname": "shipin",
-  "miniprogramRoot": "./dist"
+	"description": "shipin wxlite project",
+	"setting": {
+		"urlCheck": false,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wx8d767408f4733f80",
+	"projectname": "shipin",
+	"miniprogramRoot": "./dist",
+	"condition": {}
 }

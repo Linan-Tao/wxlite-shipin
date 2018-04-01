@@ -12,20 +12,22 @@
         <text>新品活动</text>
       </view>
     </view>
-    <view class="card" wx:for-items="{{products}}" wx:for-index="index" wx:for-item="product" wx:key="id">
-      <navigator url="{{'product?id='+product.id}}" open-type="navigateTo" hover-class="navigator-hover">
-        <view class="text d-flex f-wrap-no a-items-center m-t-25">
-          <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-            <image class="product-image" mode="scaleToFill" src="{{product.first_image}}"></image>
+    <view class="products">
+      <view class="card" wx:for-items="{{products}}" wx:for-index="index" wx:for-item="product" wx:key="id">
+        <navigator url="{{'product?id='+product.id}}" open-type="navigateTo" hover-class="navigator-hover">
+          <view class="text d-flex f-wrap-no a-items-center m-t-25">
+            <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+              <image class="product-image" mode="scaleToFill" src="{{product.first_image}}"></image>
+            </view>
+            <view class="t-color-black text-block f-grow-5 a-self-stretch d-flex f-direction-column">
+              <text class="t-size-35 m-t-25 m-l-20">{{product.name}}</text>
+              <text class="product-price m-l-20">
+                {{product.price}}
+              </text>
+            </view>
           </view>
-          <view class="t-color-black text-block f-grow-5 a-self-stretch d-flex f-direction-column">
-            <text class="t-size-35 m-t-25 m-l-20">{{product.name}}</text>
-            <text class="product-price m-l-20">
-              {{product.price}}
-            </text>
-          </view>
-        </view>
-      </navigator>
+        </navigator>
+      </view>
     </view>
   </view>
 </template>
@@ -137,17 +139,24 @@
     background-color: bisque;
     margin-right: 10rpx;
   }
-  .product-image {
-    width: 200rpx;
-    height: 300rpx;
-    background-color: gainsboro;
-  }
-  .product-price {
-    margin-top: 200rpx;
-    color: rosybrown;
-  }
-  .icon {
-    height: 100rpx;
-    width: 100rpx;
+  .products {
+    padding: 0 20rpx;
+    .card:not(:first-child) {
+      margin-top: 25rpx;
+      border-top: 1rpx solid #C9C9C9;
+    }
+    .product-image {
+      width: 200rpx;
+      height: 300rpx;
+      background-color: gainsboro;
+    }
+    .product-price {
+      margin-top: 200rpx;
+      color: rosybrown;
+    }
+    .icon {
+      height: 100rpx;
+      width: 100rpx;
+    }
   }
 </style>

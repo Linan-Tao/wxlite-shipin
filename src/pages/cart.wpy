@@ -1,27 +1,29 @@
 <template>
   <block>
-    <view class="d-flex m-t-15 f-wrap-no a-items-center" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
-      <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-        <image src="{{selectedCartIds.indexOf(cart.id) < 0 ? '../images/check.png' : '../images/checked.png'}}" class="icon" bindtap="selectedProduct({{cart.id}})"/>
-      </view>
-      <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-        <image src="{{cart.product.first_image}}" class="modelImage"/>
-      </view>
-      <view class="t-color-black text-block m-l-10 f-grow-4 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-        <text class="block">{{cart.product.name}}</text>
-        <text class="block">{{cart.product.price}}</text>
-        <view class="d-flex">
-          <button type="default" size="mini" class="f-grow-1"> - </button>
-          <text class="f-grow-2 number">{{cart.amount}}</text>
-          <button type="default" size="mini" class="f-grow-1"> + </button>
+    <view class="cart-items">
+      <view class="d-flex m-t-15 f-wrap-no a-items-center cart-item" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
+        <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+          <image src="{{selectedCartIds.indexOf(cart.id) < 0 ? '../images/check.png' : '../images/checked.png'}}" class="icon" bindtap="selectedProduct({{cart.id}})"/>
         </view>
-      </view>
-      <view bindtap="deleteCart({{cart.id}})" class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-        <image src="../images/delete.png" class="icon"/>
+        <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+          <image src="{{cart.product.first_image}}" class="modelImage"/>
+        </view>
+        <view class="t-color-black text-block m-l-10 f-grow-4 a-self-stretch d-flex f-direction-column justify-content-center a-items-center cart-info">
+          <text class="block">{{cart.product.name}}</text>
+          <text class="block">{{cart.product.price}} ￥</text>
+          <view class="d-flex cart-number">
+            <button type="default" size="mini" class="f-grow-1 cart-minus"> - </button>
+            <text class="f-grow-2 number">{{cart.amount}}</text>
+            <button type="default" size="mini" class="f-grow-1 cart-plus"> + </button>
+          </view>
+        </view>
+        <view bindtap="deleteCart({{cart.id}})" class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
+          <image src="../images/delete.png" class="icon"/>
+        </view>
       </view>
     </view>
     <view class="footer">
-      <button type="primary"> 买啦</button>
+      <button type="primary">确认支付</button>
     </view>
   </block>
 </template>
@@ -76,29 +78,58 @@ export default class Cart extends wepy.page {
 }
 </script>
 <style lang="less">
-  .icon {
-    width: 50rpx;
-    height: 50rpx;
-    margin-top: 15rpx;
+  block {
+    flex-direction: column;
   }
-  .modelImage {
-    width: 200rpx;
-    height: 200rpx;
-    margin-top: 15rpx;    
-  }
-  .number {
-    width: 100rpx;
-    text-align: center;
-    border: 2rpx solid #F8F8F8;
+  .cart-items {
+    border-top: 1rpx solid #C9C9C9;
+    padding: 0 10rpx 140rpx 10rpx;
+    .cart-item {
+      &:not(:first-child){
+        margin-top: 25rpx;
+        border-top: 1rpx solid #C9C9C9;
+      }
+      .cart-info {
+        .cart-number {
+          .number {
+            width: 80rpx;
+            text-align: center;
+            border: 1rpx solid #F8F8F8;
+            border-radius: 5px;
+            margin-left: 5rpx;
+            margin-right: 5rpx;
+          }
+        }
+      }
+      .icon {
+        width: 50rpx;
+        height: 50rpx;
+        margin-top: 15rpx;
+      }
+      .modelImage {
+        width: 200rpx;
+        height: 200rpx;
+        margin-top: 15rpx;
+      }
+
+    }
   }
   .footer {
+    // border-top: 1rpx solid #C9C9C9;
     width: 100%;
-    overflow: hidden;
     position: fixed;
     bottom: 0;
     left: 0;
-    z-index: 2000;
+    // z-index: 2000;
     background: #fff;
-    padding-top: 20rpx;
+    padding-top: 10rpx;
+    button {
+      border-radius: unset;
+      margin: 0 10rpx 10rpx 10rpx;
+      padding: unset;
+      &:after {
+        display: none;
+      }
+    }
   }
 </style>
