@@ -56,7 +56,6 @@
           <button type="{{selectedSize == 'M' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('M')"> M </button>
           <button type="{{selectedSize == 'L' ? 'primary' : 'default'}}" size="mini" class="m-l-15" bindtap="selected('L')"> L </button>
         </view>
-        <button type="default" bindtap="addCart">加入购物车</button>
       </view>
     </view>
     <view class="footer">
