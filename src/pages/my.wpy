@@ -14,19 +14,19 @@
       <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">已完成</text></view>
     </view>
     <view class="content d-flex f-wrap-no a-items-center justify-content-center m-t-25 t-size-25">
-      <view class="f-grow-1 f-direction-column center">
+      <view class="f-grow-1 f-direction-column center" bindtap="myDiscount">
         <image src="../images/cupons.png" mode="scaleToFill" class="icon text-block"></image>
-        <text class="t-color-brown text-block">我的优惠券</text>
+        <text class="t-color-brown text-block">优惠券</text>
       </view>
-      <view class="f-grow-1 f-direction-column center">
+      <view class="f-grow-1 f-direction-column center" bindtap="addressBook">
         <image src="../images/addree.png" mode="scaleToFill" class="icon text-block"></image>
         <text class="t-color-brown text-block">收货地址</text>
       </view>
-      <view class="f-grow-1 f-direction-column center">
+      <view class="f-grow-1 f-direction-column center" bindtap="myIntegral">
         <image src="../images/integral.png" mode="scaleToFill" class="icon text-block"></image>
         <text class="t-color-brown text-block">我的积分</text>
       </view>
-      <view class="f-grow-1 f-direction-column center">
+      <view class="f-grow-1 f-direction-column center" bindtap="helper">
         <image src="../images/question.png" mode="scaleToFill" class="icon text-block"></image>
         <text class="t-color-brown text-block">常见问题</text>
       </view>
@@ -39,6 +39,23 @@ export default class Cart extends wepy.page {
   data = {
     userUrl: '',
     userName: ''
+  }
+  methods = {
+    myDiscount: function() {
+      console.log('我的优惠券')
+    },
+    addressBook: function() {
+      console.log('管理收货地址')
+      wepy.navigateTo({
+        url: 'address_book'
+      })
+    },
+    myIntegral: function() {
+      console.log('查看我的积分')
+    },
+    helper: function() {
+      console.log('常见问题')
+    }
   }
   onLoad () {
     if (this.$parent.globalData.userInfo) {
