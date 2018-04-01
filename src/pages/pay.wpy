@@ -1,12 +1,12 @@
 <template>
-  <view>
+  <block>
     <view class="d-flex a-items-center">
       <view class="f-grow-5" bindtap="editAddressBook">
         <view wx:if="{{address_book.id}}" class="m-l-30">
           <text class="address_book">{{address_book.name + ' | ' + address_book.mobile}}</text>
           <text class="address_book">{{address_book.detail_address}}</text>
         </view>
-        <view wx:else class="m-l-80"> 请添加收货地址 </view>
+        <view wx:else class="m-l-80">请添加收货地址</view>
       </view>
       <view class="f-grow-1"><image src="../images/right.png" class="icon"/></view>
     </view>
@@ -23,10 +23,10 @@
       </view>
     </view>
     <view class="footer d-flex">
-      <text class="f-grow-5 m-l-20">应付:{{pay}}元</text>
-      <button type="primary" class="f-grow-1" bindtap="submitOrder"> 提交订单</button>
+      <text class="f-grow-5 m-l-20">应付: {{pay}} 元</text>
+      <button type="primary" class="f-grow-1" bindtap="submitOrder">付款</button>
     </view>
-  </view>
+  </block>
 </template>
 <script>
 import wepy from 'wepy'
@@ -124,16 +124,28 @@ export default class Pay extends wepy.page {
   .modelImage {
     width: 200rpx;
     height: 200rpx;
-    margin-top: 15rpx;    
+    margin-top: 15rpx;
   }
   .footer {
     width: 100%;
-    overflow: hidden;
     position: fixed;
     bottom: 0;
     left: 0;
-    z-index: 2000;
-    background: #fff;
-    padding-top: 20rpx;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 10rpx;
+    color: #fff;
+    text {
+      margin-left: 30rpx;
+      line-height: 110rpx;
+      font-size: 24px;
+      font-weight: 600;
+    }
+    button {
+      border-radius: unset;
+      margin: 0 30rpx 10rpx 10rpx;
+      &:after {
+        display: none;
+      }
+    }
   }
 </style>
