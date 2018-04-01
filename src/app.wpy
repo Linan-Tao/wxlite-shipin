@@ -27,13 +27,16 @@ export default class extends wepy.app {
       'pages/index',
       'pages/product',
       'pages/cart',
+      'pages/pay',
+      'pages/address_book',
       'pages/my'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: '纯纯饰品美丽颂',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'black',
+      backgroundColor: '#eee'
     },
     tabBar: {
       selectedColor: '#1afa29',

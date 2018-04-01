@@ -127,6 +127,9 @@
 .m-t-25 {
   margin-top: 25rpx;
 }
+.m-t-45 {
+  margin-top: 45rpx;
+}
 .m-l-10 {
   margin-left: 10rpx;
 }
@@ -197,4 +200,8 @@
 }
 .clearfix,.clearfix::after {
   clear: both;
+}
+
+Page {
+  background: #eee;
 }

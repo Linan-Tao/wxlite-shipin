@@ -1,0 +1,66 @@
+<template>
+  <view>
+    <view class="text-center"><text>收货人信息</text></view>
+    <form bindsubmit="formSubmit">
+      <view class="section d-flex m-t-45 a-items-center">
+        <view class="section__title f-grow-1 m-l-10">姓名:</view>
+        <input name="name" value="{{address_book.name}}" class="f-grow-4" />
+      </view>
+      <view class="section d-flex m-t-45 a-items-center">
+        <view class="section__title f-grow-1 m-l-10">手机号:</view>
+        <input name="mobile" value="{{address_book.mobile}}" class="f-grow-4" />
+      </view>
+      <!-- <view class="section d-flex m-t-45">
+        <view class="section__title f-grow-1">收货地址:</view>
+        <input name="input" class="f-grow-4" />
+      </view> -->
+      <view class="section d-flex m-t-45 a-items-center">
+        <view class="section__title f-grow-1 m-l-10">详细地址:</view>
+        <input name="detail_address" value="{{address_book.detail_address}}" class="f-grow-4" />
+      </view>
+      <view class="btn-area m-t-45">
+        <button formType="submit">确认</button>
+      </view>
+    </form>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import AddressBookAPI from '../api/address_book'
+export default class AddressBook extends wepy.page {
+  config = {
+    navigationBarTitleText: '编辑地址',
+    backgroundColor: '#eeeeee'
+  }
+  data = {
+    address_book: {
+      name: '',
+      mobile: '',
+      // delivery_address: '',
+      detail_address: ''
+    }
+  }
+  methods = {
+    formSubmit: function(e) {
+      console.log(e.detail.value)
+      AddressBookAPI.createAddressBook(e.detail.value).then((resp) => {
+        wepy.hideLoading()
+        console.log(resp)
+        this.address_book = resp.data
+        this.$apply()
+      })
+      // console.log('form发生了submit事件，携带数据为：', e)
+    }
+  }
+}
+</script>
+<style lang="less">
+  .text-center{
+    text-align: center;
+  }
+  .section {
+    height: 100rpx;
+    line-height: 100rpx;
+    background-color: #fff;
+  }
+</style>
