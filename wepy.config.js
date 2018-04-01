@@ -1,6 +1,6 @@
 const path = require('path')
 var prod = process.env.NODE_ENV === 'production'
-var apiHost = process.env.NODE_ENV === 'production' ? 'https://wx.jjerp.cn' : 'http://192.168.2.102:3000'
+var apiHost = process.env.NODE_ENV === 'production' ? 'https://wx.jjerp.cn' : 'http://localhost:3000'
 
 
 module.exports = {

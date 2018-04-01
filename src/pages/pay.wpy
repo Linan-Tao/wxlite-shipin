@@ -1,29 +1,44 @@
 <template>
   <block>
     <view class="body">
-      <view class="d-flex a-items-center">
-        <view class="f-grow-5 address-infos" bindtap="editAddressBook">
-          <view wx:if="{{address_book.id}}" class="m-l-30">
-            <text class="address_book user-info">{{address_book.name + ' | ' + address_book.mobile}}</text>
-            <text class="address_book user-address">{{address_book.detail_address}}</text>
+      <view wx:if="{{address_books}}" class="address-infos">
+        <view wx:for-item="address_book" wx:key="id" wx:for-items="{{address_books}}" class="d-flex a-items-center address_book" bindtap="selectAddress({{address_book.id}})">
+          <view class="f-grow-5 m-l-30">
+            <view class="user-info">
+              <text class="user-name">{{address_book.name}}</text>
+              <text class="user-mobile">{{address_book.mobile}}</text>
+            </view>
+            <text class="m-l-10 user-address">{{address_book.detail_address}}</text>
           </view>
-          <view wx:else class="m-l-80">请添加收货地址</view>
+          <view class="f-grow-1">
+            <!-- TODO: 根据用户信息中的默认地址,设置默认选中 -->
+            <image src="{{address_book.id == address_books[0].id ? '../images/checked.png' : '../images/check.png' }}" class="icon"/>
+          </view>
+        </view>
+      </view>
+
+      <view class="d-flex a-items-center new-address" bindtap="editAddressBook">
+        <view class="f-grow-5">
+          <view class="m-l-30">添加新的收货地址</view>
         </view>
         <view class="f-grow-1"><image src="../images/right.png" class="icon"/></view>
       </view>
+
       <view class="d-flex m-t-15 f-wrap-no a-items-center cart" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
         <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
           <image src="{{cart.product.first_image}}" class="modelImage"/>
         </view>
         <view class="t-color-black text-block m-l-10 f-grow-4 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
           <text class="block">{{cart.product.name}}</text>
-          <text class="block">数量:{{cart.amount}}</text>
+          <text class="block">数量: {{cart.amount}}</text>
         </view>
         <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
           <text class="block">{{cart.product.price}}</text>
         </view>
       </view>
+
     </view>
+
     <view class="footer d-flex">
       <text class="f-grow-5 m-l-20">应付: {{pay}} 元</text>
       <button type="primary" class="f-grow-1" bindtap="submitOrder">付款</button>
@@ -43,6 +58,7 @@ export default class Pay extends wepy.page {
   }
   data = {
     carts: [],
+    address_books: [],
     address_book: {},
     pay: 0
   }
@@ -51,6 +67,9 @@ export default class Pay extends wepy.page {
       wepy.navigateTo({
         url: 'address_book?id=' + this.address_book.id
       })
+    },
+    selectAddress: function (addressId) {
+      console.log('取消其他选中项状态,并设置当前点击项 address_book_id ' + addressId + ' 选中状态')
     },
     submitOrder: function () {
       var cartIds = this.carts.map(sc => sc.id)
@@ -81,7 +100,7 @@ export default class Pay extends wepy.page {
   }
   onLoad (options) {
     this.loadShoppingCart()
-    this.loadAddresBook()
+    this.loadAddressBooks()
   }
   loadShoppingCart () {
     /* 加载 */
@@ -100,12 +119,12 @@ export default class Pay extends wepy.page {
       this.$apply()
     })
   }
-  loadAddresBook () {
+  loadAddressBooks () {
     AddressBookAPI.all().then((resp) => {
       if (resp.data) {
-        this.address_book = resp.data
+        this.address_books = resp.data
+        this.$apply()
       }
-      this.$apply()
     })
   }
 }
@@ -115,21 +134,31 @@ export default class Pay extends wepy.page {
     // height: 1050rpx;
     padding: 0 10rpx 150rpx 10rpx;
     .address-infos {
-      line-height: 3;
+      line-height: 2;
       .address_book {
-        display: block;
-        &.user-address {
+        margin-top: 25rpx;
+        padding-bottom: 25rpx;
+        & {
+          border-bottom: 1rpx solid #C9C9C9;
+        }
+        .user-name {
+          margin: 0 10rpx;
+        }
+        .user-mobile {
+          float: right;
+          margin: 0 100rpx 0 30rpx;
+        }
+        .user-address {
           font-size: 28rpx;
         }
       }
     }
+    .new-address {
+      margin: 40rpx 0;
+    }
     .cart {
       background: #fff;
     }
-    // .address_book {
-    //   line-height: 100rpx;
-
-    // }
     .icon {
       width: 50rpx;
       height: 50rpx;

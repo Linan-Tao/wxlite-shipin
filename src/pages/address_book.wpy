@@ -1,6 +1,6 @@
 <template>
   <block>
-    <form bindsubmit="formSubmit">
+    <form bindsubmit="formSubmit" class="address-modal">
       <view class="body">
         <view class="text-center"><text>收货人信息</text></view>
         <view class="section d-flex m-t-45 a-items-center">
@@ -35,6 +35,7 @@ export default class AddressBook extends wepy.page {
     backgroundColor: '#eeeeee'
   }
   data = {
+    address_books: [],
     address_book: {
       name: '',
       mobile: '',
@@ -42,7 +43,31 @@ export default class AddressBook extends wepy.page {
       detail_address: ''
     }
   }
+  loadAddressBooks () {
+    wepy.showLoading({
+      title: '努力加载中...'
+    })
+    AddressBookAPI.all().then((res) => {
+      wepy.hideLoading()
+      this.address_books = res.data.data
+      console.log(res.data.data)
+      this.$apply()
+    })
+  }
+  onLoad () {
+    this.loadAddressBooks()
+  }
+  added () {
+    console.log('跳回支付页面')
+    wepy.showLoading({
+      title: '努力加载中...'
+    })
+    wepy.navigateTo({
+      url: 'pay'
+    })
+  }
   methods = {
+
     formSubmit: function(e) {
       console.log(e.detail.value)
       AddressBookAPI.createAddressBook(e.detail.value).then((resp) => {
@@ -50,6 +75,8 @@ export default class AddressBook extends wepy.page {
         console.log(resp)
         this.address_book = resp.data
         this.$apply()
+        console.log('新建地址后,应该关闭模态框,并默认选中新建的地址(并非设置默认地址)')
+        this.added()
       })
       // console.log('form发生了submit事件，携带数据为：', e)
     }
