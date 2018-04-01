@@ -4,8 +4,8 @@
       <view class="d-flex a-items-center">
         <view class="f-grow-5 address-infos" bindtap="editAddressBook">
           <view wx:if="{{address_book.id}}" class="m-l-30">
-            <text class="address_book">{{address_book.name + ' | ' + address_book.mobile}}</text>
-            <text class="address_book">{{address_book.detail_address}}</text>
+            <text class="address_book user-info">{{address_book.name + ' | ' + address_book.mobile}}</text>
+            <text class="address_book user-address">{{address_book.detail_address}}</text>
           </view>
           <view wx:else class="m-l-80">请添加收货地址</view>
         </view>
@@ -116,14 +116,20 @@ export default class Pay extends wepy.page {
     padding: 0 10rpx 150rpx 10rpx;
     .address-infos {
       line-height: 3;
+      .address_book {
+        display: block;
+        &.user-address {
+          font-size: 28rpx;
+        }
+      }
     }
     .cart {
       background: #fff;
     }
-    .address_book {
-      line-height: 100rpx;
-      display: block;
-    }
+    // .address_book {
+    //   line-height: 100rpx;
+
+    // }
     .icon {
       width: 50rpx;
       height: 50rpx;

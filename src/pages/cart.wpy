@@ -23,7 +23,7 @@
       </view>
     </view>
     <view class="footer d-flex">
-      <text class="f-grow-5">商品总价:{{selectedFee}}元</text>
+      <text class="f-grow-5">商品总价: {{selectedFee}} 元</text>
       <button type="primary" size="mini" class="f-grow-1" bindtap="goPay">确认下单</button>
     </view>
   </block>
