@@ -1,28 +1,30 @@
 <template>
-  <view>
-    <view class="text-center"><text>收货人信息</text></view>
+  <block>
     <form bindsubmit="formSubmit">
-      <view class="section d-flex m-t-45 a-items-center">
-        <view class="section__title f-grow-1 m-l-10">姓名:</view>
-        <input name="name" value="{{address_book.name}}" class="f-grow-4" />
+      <view class="body">
+        <view class="text-center"><text>收货人信息</text></view>
+        <view class="section d-flex m-t-45 a-items-center">
+          <view class="section__title f-grow-1 m-l-20">收货人:</view>
+          <input name="name" value="{{address_book.name}}" class="f-grow-4" />
+        </view>
+        <view class="section d-flex m-t-45 a-items-center">
+          <view class="section__title f-grow-1 m-l-20">联系电话:</view>
+          <input name="mobile" value="{{address_book.mobile}}" class="f-grow-4" />
+        </view>
+        <!-- <view class="section d-flex m-t-45">
+          <view class="section__title f-grow-1">收货地址:</view>
+          <input name="input" class="f-grow-4" />
+        </view> -->
+        <view class="section d-flex m-t-45 a-items-center">
+          <view class="section__title f-grow-1 m-l-20">收货地址:</view>
+          <input name="detail_address" value="{{address_book.detail_address}}" class="f-grow-4" />
+        </view>
       </view>
-      <view class="section d-flex m-t-45 a-items-center">
-        <view class="section__title f-grow-1 m-l-10">手机号:</view>
-        <input name="mobile" value="{{address_book.mobile}}" class="f-grow-4" />
-      </view>
-      <!-- <view class="section d-flex m-t-45">
-        <view class="section__title f-grow-1">收货地址:</view>
-        <input name="input" class="f-grow-4" />
-      </view> -->
-      <view class="section d-flex m-t-45 a-items-center">
-        <view class="section__title f-grow-1 m-l-10">详细地址:</view>
-        <input name="detail_address" value="{{address_book.detail_address}}" class="f-grow-4" />
-      </view>
-      <view class="btn-area m-t-45">
-        <button formType="submit">确认</button>
+      <view class="footer btn-area m-t-45">
+        <button formType="submit">确认添加</button>
       </view>
     </form>
-  </view>
+  </block>
 </template>
 <script>
 import wepy from 'wepy'
@@ -55,12 +57,29 @@ export default class AddressBook extends wepy.page {
 }
 </script>
 <style lang="less">
-  .text-center{
-    text-align: center;
+  .body {
+    padding: 30rpx 10rpx 150rpx 10rpx;
+    .text-center {
+      text-align: center;
+    }
+    .section {
+      height: 100rpx;
+      line-height: 100rpx;
+      background-color: #fff;
+    }
   }
-  .section {
-    height: 100rpx;
-    line-height: 100rpx;
-    background-color: #fff;
+  .footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding-top: 10rpx;
+    button {
+      border-radius: unset;
+      margin: 0 10rpx 10rpx 10rpx;
+      &:after {
+        display: none;
+      }
+    }
   }
 </style>
