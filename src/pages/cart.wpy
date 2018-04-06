@@ -128,6 +128,7 @@ export default class Cart extends wepy.page {
       background-color: #fff;
       padding: 10rpx;
       border-radius: 5rpx;
+      box-shadow: 5rpx 5rpx 3rpx #aaa;
       .cart-info {
         .cart-minus,.cart-plus {
           padding: 0 1em;

@@ -1,9 +1,12 @@
 <template>
   <view class="page">
-    <view class="section">
+    <view class="section-wrapper">
       <image mode="{{image.mode}}" src="{{image.src}}"></image>
+      <!--
       <text class="title">FASHION WITH REACH</text>
+      -->
     </view>
+    <!--
     <view class="text d-flex f-wrap-no a-items-center m-t-25">
       <view class="t-color-black text-block1 m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
         <text>全部新品</text>
@@ -12,18 +15,29 @@
         <text>新品活动</text>
       </view>
     </view>
-    <view class="products">
-      <view class="card" wx:for-items="{{products}}" wx:for-index="index" wx:for-item="product" wx:key="id">
+    -->
+
+    <view class="catalogs-wrapper">
+      <view wx:for-items="{{catalogs}}"
+            wx:for-item="catalog"
+            wx:key="id"
+            wx:for-index="index"
+            class="catalog-item">
+        {{catalog.name}}
+      </view>
+    </view>
+
+    <view class="products-wrapper">
+      <view class="product" wx:for-items="{{products}}" wx:for-item="product" wx:for-index="index" wx:key="id">
         <navigator url="{{'product?id='+product.id}}" open-type="navigateTo" hover-class="navigator-hover">
-          <view class="text d-flex f-wrap-no a-items-center m-t-25">
-            <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-              <image class="product-image" mode="scaleToFill" src="{{product.first_image}}"></image>
+          <view class="info-wrapper">
+            <view class="image">
+              <image mode="scaleToFill" src="{{product.first_image}}"></image>
             </view>
-            <view class="t-color-black text-block f-grow-5 a-self-stretch d-flex f-direction-column">
-              <text class="t-size-35 m-t-25 m-l-20">{{product.name}}</text>
-              <text class="product-price m-l-20">
-                {{product.price}}
-              </text>
+            <view class="info m-l-20">
+              <text class="name">{{product.name}}</text>
+              <text class="desc">{{product.description}}</text>
+              <text class="price align-content-end">￥{{product.price}}</text>
             </view>
           </view>
         </navigator>
@@ -36,6 +50,7 @@
   import wepy from 'wepy'
   import { login } from '../libs/login'
   import ProductAPI from '../api/products'
+  import CatalogAPI from '../api/catalog'
   export default class Index extends wepy.page {
     config = {
       navigationBarTitleText: '小桃饰品'
@@ -53,7 +68,8 @@
         src: '../images/timg.jpeg'
       },
       productsMeta: null,
-      products: []
+      products: [],
+      catalogs: []
     }
 
     methods = {
@@ -62,6 +78,10 @@
       }
     }
     onLoad () {
+      CatalogAPI.common().then((res) => {
+        this.catalogs = res.data
+      })
+
       wepy.getSystemInfo({
         success: (res) => {
           console.log('获取系统参数成功')
@@ -124,39 +144,80 @@
 </script>
 
 <style lang="less">
-  .section {
-    text-align: center
-  }
-  .title {
-    font-size: 1.3rem;
-  }
-  .text-block1 {
-    line-height: 200rpx;
-    background-color: beige;
-  }
-  .text-block2 {
-    line-height: 200rpx;
-    background-color: bisque;
-    margin-right: 10rpx;
-  }
-  .products {
-    padding: 0 20rpx;
-    .card:not(:first-child) {
-      margin-top: 25rpx;
-      border-top: 1rpx solid #C9C9C9;
+  .page {
+    padding: 0rpx 10rpx;
+    .section-wrapper {
+      text-align: center;
     }
-    .product-image {
-      width: 200rpx;
-      height: 300rpx;
-      background-color: gainsboro;
+
+    .catalogs-wrapper {
+      margin-bottom: 10rpx;
+      text-align: center;
+      vertical-align: middle;
+      border-radius: 5rpx;
+      background: #fff;
+      box-shadow: 5rpx 5rpx 3rpx #aaa;
+      .catalog-item {
+        display: inline-block;
+        text-align: center;
+        width: 33%;
+        margin: 20rpx 0rpx;
+        &:not(:first-child) {
+          border-left: 1rpx solid #D2D3D2;
+        }
+      }
     }
-    .product-price {
-      margin-top: 200rpx;
-      color: rosybrown;
-    }
-    .icon {
-      height: 100rpx;
-      width: 100rpx;
+    .products-wrapper {
+      .product {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 5rpx;
+        box-shadow: 5rpx 5rpx 3rpx #aaa;
+        &:not(:first-child) {
+          margin-top: 15rpx;
+        }
+        .info-wrapper {
+          display: flex;
+          .image {
+            width: 200rpx;
+            height: 200rpx;
+            background-color: gainsboro;
+            image {
+              border-top-left-radius: 5rpx;
+              border-bottom-left-radius: 5rpx;
+              width: 100%;
+              height: 100%;
+            }
+          }
+          .info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            .name {
+              align-self: flex-start;
+              color: #D4579C;
+              font-size: 40rpx;
+              font-weight: 600;
+              width: 200rpx;
+              height: 58rpx;
+              overflow: hidden;
+            }
+            .desc {
+              font-size: 0.7em;
+              display: block;
+              flex: auto;
+              align-self: auto;
+              max-height: 80rpx;
+              overflow: hidden;
+            }
+            .price {
+              align-self: flex-end;
+              color: #CC0000;
+              margin-right: 20rpx;
+            }
+          }
+        }
+      }
     }
   }
+
 </style>
