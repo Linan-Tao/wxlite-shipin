@@ -18,11 +18,16 @@ const destroyShoppingCart = (cart_id) => {
   })
 }
 
+const editShoppingCart = (options) => {
+  return http.put(`/shopping_carts`, options)
+}
+
 
 export default {
   all,
   find,
   createShoppingCart,    
-  destroyShoppingCart
+  destroyShoppingCart,
+  editShoppingCart
 }
 

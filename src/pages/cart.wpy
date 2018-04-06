@@ -3,7 +3,7 @@
     <view class="body">
       <view class="d-flex m-t-15 f-wrap-no a-items-center cart-item" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
         <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-          <image src="{{selectedCartIds.indexOf(cart.id) < 0 ? '../images/check.png' : '../images/checked.png'}}" class="icon" bindtap="selectedProduct({{cart.id}})"/>
+          <image src="{{cart.icon_url}}" class="icon" bindtap="selectedProduct({{cart}})"/>
         </view>
         <view class="t-color-black text-block m-l-10 f-grow-2 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
           <image src="{{cart.product.first_image}}" class="modelImage"/>
@@ -12,9 +12,9 @@
           <text class="block">{{cart.product.name}}</text>
           <text class="block">{{cart.product.price}} ￥</text>
           <view class="d-flex cart-number">
-            <button type="default" size="mini" class="f-grow-1 cart-minus">-</button>
+            <button type="default" size="mini" bindtap="editCart('minus', {{cart.product}})" class="f-grow-1 cart-minus">-</button>
             <text class="f-grow-2 number">{{cart.amount}}</text>
-            <button type="default" size="mini" class="f-grow-1 cart-plus">+</button>
+            <button type="default" size="mini" bindtap="editCart('plus', {{cart.product}})" class="f-grow-1 cart-plus">+</button>
           </view>
         </view>
         <view bindtap="deleteCart({{cart.id}})" class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
@@ -77,6 +77,25 @@ export default class Cart extends wepy.page {
       var ids = this.selectedCarts.map(sc => sc.id)
       wepy.navigateTo({
         url: 'pay?ids=' + ids
+      })
+    },
+    editCart: function (operator, product) {
+      let iconCartIndex = this.carts.findIndex(c => { return c.product.id === product.id })
+      let cart = this.carts[iconCartIndex]
+      if (operator === 'minus') {
+        if (cart.amount === 1) {
+          return
+        }
+        cart.amount -= 1
+      } else if (operator === 'plus') {
+        cart.amount += 1
+      }
+      ShoppingCartAPI.editShoppingCart({product_id: product.id, amount: cart.amount}).then((resp) => {
+        wepy.showToast({
+          title: '修改成功',
+          icon: 'success',
+          duration: 2000
+        })
       })
     }
   }
