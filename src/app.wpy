@@ -64,7 +64,9 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    userInfo: null
+    userInfo: null,
+    my_banner: 'images/timg.jpeg',
+    delivery_fee: 0
   }
 
   constructor () {

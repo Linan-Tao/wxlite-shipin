@@ -1,7 +1,7 @@
 <template>
   <block>
     <view class="banner">
-      <image src="../images/timg.jpeg" mode="scaleToFill" class="bannerImage"></image>
+      <image src="{{banner}}" mode="scaleToFill" class="bannerImage"></image>
       <view class="userInfo">
         <image src="{{userUrl}}" mode="scaleToFill" class="userImage"></image>
         <text class="text-block t-color-brown">{{userName}}</text>
@@ -38,7 +38,8 @@ import wepy from 'wepy'
 export default class Cart extends wepy.page {
   data = {
     userUrl: '',
-    userName: ''
+    userName: '',
+    banner: ''
   }
   methods = {
     myDiscount: function() {
@@ -58,6 +59,7 @@ export default class Cart extends wepy.page {
     }
   }
   onLoad () {
+    this.banner = this.$parent.globalData.my_banner
     if (this.$parent.globalData.userInfo) {
       this.userName = this.$parent.globalData.userInfo.nickName
       this.userUrl = this.$parent.globalData.userInfo.avatarUrl

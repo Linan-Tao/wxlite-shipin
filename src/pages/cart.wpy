@@ -99,7 +99,7 @@ export default class Cart extends wepy.page {
       })
     }
   }
-  onLoad (options) {
+  onShow (options) {
     this.loadShoppingCart()
   }
   loadShoppingCart () {

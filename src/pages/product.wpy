@@ -18,7 +18,7 @@
         </view>
         <view class="text content productAttribute d-flex f-wrap-no a-items-center m-t-25">
           <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-            <text>运费:{{product.delivery_fee}}</text>
+            <text>运费:{{delivery_fee}}</text>
           </view>
           <view class="t-color-black text-block f-grow-1 a-self-stretch d-flex f-direction-column">
             <text>剩余:{{product.stock}}</text>
@@ -72,7 +72,8 @@
     data = {
       product: {},
       showModalStatus: false,
-      selectedSize: null
+      selectedSize: null,
+      delivery_fee: 0
     }
     methods = {
       showModal: function () {
@@ -98,6 +99,7 @@
       }
     }
     onLoad (options) {
+      this.delivery_fee = this.$parent.globalData.delivery_fee
       this.loadProduct()
     }
     loadProduct () {
