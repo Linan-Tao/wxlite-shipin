@@ -10,7 +10,7 @@
         </view>
         <view class="t-color-black text-block m-l-10 f-grow-4 a-self-stretch d-flex f-direction-column justify-content-center a-items-center cart-info">
           <text class="block">{{cart.product.name}}</text>
-          <text class="block">{{cart.product.price}} ￥</text>
+          <text class="block">{{cart.product.sell_price}} ￥</text>
           <view class="d-flex cart-number">
             <button type="default" size="mini" bindtap="editCart('minus', {{cart.product}})" class="f-grow-1 cart-minus">-</button>
             <text class="f-grow-2 number">{{cart.amount}}</text>
@@ -24,7 +24,7 @@
     </view>
     <view class="footer d-flex">
       <text class="f-grow-5">商品总价: {{selectedFee}} 元</text>
-      <button type="primary" size="mini" class="f-grow-1" bindtap="goPay">确认下单</button>
+      <button type="{{selectedCarts.length === 0 ? 'default' : 'primary'}}" size="mini" class="f-grow-1" bindtap="goPay">确认下单</button>
     </view>
   </block>
 </template>
@@ -74,6 +74,9 @@ export default class Cart extends wepy.page {
       })
     },
     goPay: function () {
+      if (this.selectedCarts.length === 0) {
+        return
+      }
       var ids = this.selectedCarts.map(sc => sc.id)
       wepy.navigateTo({
         url: 'pay?ids=' + ids

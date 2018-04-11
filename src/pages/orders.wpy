@@ -1,0 +1,174 @@
+<template>
+  <view class="orders-wrapper">
+    <view class="order" wx:for-items="{{orders}}" wx:for-item="order" wx:for-index="index" wx:key="id">
+      <navigator url="{{'order?id='+order.id}}" open-type="navigateTo" hover-class="navigator-hover">
+        <text class="wrap">{{order.status}}</text>
+        <view class="info-wrapper m-t-15" wx:for-items="{{order.order_products}}" wx:for-item="order_product" wx:for-index="product_index" wx:key="id">
+          <view class="image">
+            <image mode="scaleToFill" src="{{order_product.product.first_image}}"></image>
+          </view>
+          <view class="info m-l-20">
+            <text class="name">{{order_product.product.name}}</text>
+            <text class="desc">{{order_product.product.description}}</text>
+            <text class="price align-content-end">￥{{order_product.price}} </text>
+            <text class="price align-content-end">x {{order_product.amount}}</text>
+            <text class="total align-content-end m-t-25">合计:￥{{order.price}}  </text>
+          </view>
+        </view>
+      </navigator>
+      <text class="wrap">*</text>
+      <view class="right" wx:if="{{order.status === '未支付'}}">
+        <button type="default" size="mini" bindtap="charge({{order}})"> 去支付 </button>
+      </view>
+    </view>
+    <text class="wrap" wx:if="{{orders.length == 0}}">暂无订单</text>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import OrderAPI from '../api/order'
+import MD5Util from '../libs/md5'
+export default class Orders extends wepy.page {
+  config = {
+    navigationBarTitleText: '我的订单',
+    backgroundColor: '#eeeeee'
+  }
+  data = {
+    orders: []
+  }
+  methods = {
+    charge: function (order) {
+      OrderAPI.chargeOrder(order.id).then((res) => {
+        var sign = ''
+        console.log(res)
+        var timestamp = (new Date()).getTime().toString()
+        var signA = 'appId=' + res.data.appid + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepay_id + '&signType=MD5&timeStamp=' + timestamp
+        var signB = signA + '&key=a77105af5cf2346e6646abc55c3da026'
+        // console.log(signB)
+        sign = MD5Util.MD5(signB).toUpperCase()
+        // console.log(sign)
+        wepy.requestPayment({
+          'timeStamp': timestamp,
+          'nonceStr': res.data.nonce_str,
+          'package': 'prepay_id=' + res.data.prepay_id,
+          'signType': 'MD5',
+          'paySign': sign,
+          'success': function(payRes) {
+            console.log(payRes)
+            wepy.showToast({
+              title: '支付成功',
+              icon: 'success',
+              duration: 2000
+            })
+            wepy.navigateTo({
+              url: `order?id=${res.data.id}`
+            })
+          },
+          'fail': function(res) {
+            console.log(res)
+          }
+        })
+      })
+    }
+  }
+  onShow () {
+    this.refreshData()
+  }
+  refreshData () {
+    let self = this
+    wepy.showLoading({
+      title: '加载中...'
+    })
+    // console.log(this.$wxpage.options)
+    OrderAPI.all(this.$wxpage.options).then((resp) => {
+      console.log(resp)
+      self.orders = resp.data.data
+      self.$apply()
+      wepy.hideLoading()
+    })
+  }
+}
+</script>
+<style lang="less">
+ .orders-wrapper {
+  .order {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 5rpx;
+    box-shadow: 5rpx 5rpx 3rpx #aaa;
+    margin-top: 15rpx;
+    .title {
+      line-height: 80rpx;
+      display: block;
+      background-color: gainsboro;
+    }
+    .right {
+      text-align: right;
+      margin-right: 20rpx;
+    }
+    .info-wrapper {
+      display: flex;
+      .image {
+        width: 200rpx;
+        height: 200rpx;
+        background-color: gainsboro;
+        image {
+          border-top-left-radius: 5rpx;
+          border-bottom-left-radius: 5rpx;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        .name {
+          align-self: flex-start;
+          color: rosybrown;
+          font-size: 40rpx;
+          font-weight: 600;
+          width: 200rpx;
+          height: 58rpx;
+          overflow: hidden;
+        }
+        .desc {
+          font-size: 0.7em;
+          display: block;
+          flex: auto;
+          align-self: auto;
+          max-height: 80rpx;
+          overflow: hidden;
+        }
+        .price {
+          align-self: flex-end;
+          color: rosybrown;
+          margin-right: 20rpx;
+        }
+        .total {
+          align-self: flex-end;
+          margin-right: 20rpx;
+          font-size: 1em;
+        }
+      }
+    }
+  }
+  text.wrap{
+    font-size: 1rem;
+    color: #ccc;
+    display: table;
+    line-height: 32px;
+    // background-color: #fff;
+    white-space: nowrap;
+    border-spacing: 10px 0;
+  }
+  text.wrap:before,
+  text.wrap:after{
+    display: table-cell;
+    content: '';
+    width: 50%;
+    background: -webkit-linear-gradient(#ccc,#ccc) repeat-x left center;
+    background: linear-gradient(#ccc,#ccc) repeat-x left center;
+    background-size: 1px 1px;
+  }
+}
+</style>

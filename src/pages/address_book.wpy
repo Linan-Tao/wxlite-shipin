@@ -21,7 +21,7 @@
         </view>
       </view>
       <view class="footer btn-area m-t-45">
-        <button formType="submit">确认添加</button>
+        <button formType="submit">确认</button>
       </view>
     </form>
   </block>
@@ -35,7 +35,7 @@ export default class AddressBook extends wepy.page {
     backgroundColor: '#eeeeee'
   }
   data = {
-    address_books: [],
+    // address_books: [],
     address_book: {
       name: '',
       mobile: '',
@@ -49,35 +49,40 @@ export default class AddressBook extends wepy.page {
     })
     AddressBookAPI.all().then((res) => {
       wepy.hideLoading()
-      this.address_books = res.data.data
-      console.log(res.data.data)
+      if (res.data && res.data.length > 0) {
+        this.address_book = res.data[0]
+      }
+      console.log(res.data)
       this.$apply()
     })
   }
-  onLoad () {
+  onShow () {
     this.loadAddressBooks()
   }
   added () {
-    console.log('跳回支付页面')
-    wepy.showLoading({
-      title: '努力加载中...'
-    })
-    wepy.navigateTo({
-      url: 'pay'
+    wepy.navigateBack({
+      delta: 1
     })
   }
   methods = {
-
     formSubmit: function(e) {
-      console.log(e.detail.value)
-      AddressBookAPI.createAddressBook(e.detail.value).then((resp) => {
-        wepy.hideLoading()
-        console.log(resp)
-        this.address_book = resp.data
-        this.$apply()
-        console.log('新建地址后,应该关闭模态框,并默认选中新建的地址(并非设置默认地址)')
-        this.added()
-      })
+      if (this.address_book.id) {
+        let detail = e.detail.value
+        detail['id'] = this.address_book.id
+        AddressBookAPI.editAddressBook(detail).then((resp) => {
+          console.log(resp)
+          this.address_book = resp.data
+          this.$apply()
+          this.added()
+        })
+      } else {
+        AddressBookAPI.createAddressBook(e.detail.value).then((resp) => {
+          console.log(resp)
+          this.address_book = resp.data
+          this.$apply()
+          this.added()
+        })
+      }
       // console.log('form发生了submit事件，携带数据为：', e)
     }
   }

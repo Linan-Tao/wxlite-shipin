@@ -1,27 +1,24 @@
 <template>
   <block>
     <view class="body">
-      <view wx:if="{{address_books}}" class="address-infos">
-        <view wx:for-item="address_book" wx:key="id" wx:for-items="{{address_books}}" class="d-flex a-items-center address_book" bindtap="selectAddress({{address_book.id}})">
+      <view  class="address-infos" bindtap="editAddressBook">
+        <view class="d-flex a-items-center address_book">
           <view class="f-grow-5 m-l-30">
-            <view class="user-info">
-              <text class="user-name">{{address_book.name}}</text>
-              <text class="user-mobile">{{address_book.mobile}}</text>
-            </view>
-            <text class="m-l-10 user-address">{{address_book.detail_address}}</text>
+            <block wx:if="{{address_book.id}}">
+              <view class="user-info">
+                <text class="user-name">{{address_book.name}}</text>
+                <text class="user-mobile">{{address_book.mobile}}</text>
+              </view>
+              <text class="m-l-10 user-address">{{address_book.detail_address}}</text>
+            </block>
+            <block wx:else>
+              <text>添加收货地址</text>
+            </block>
           </view>
           <view class="f-grow-1">
-            <!-- TODO: 根据用户信息中的默认地址,设置默认选中 -->
-            <image src="{{address_book.id == address_books[0].id ? '../images/checked.png' : '../images/check.png' }}" class="icon"/>
+            <image src="../images/right.png" class="icon"/>
           </view>
         </view>
-      </view>
-
-      <view class="d-flex a-items-center new-address" bindtap="editAddressBook">
-        <view class="f-grow-5">
-          <view class="m-l-30">添加新的收货地址</view>
-        </view>
-        <view class="f-grow-1"><image src="../images/right.png" class="icon"/></view>
       </view>
 
       <view class="d-flex m-t-15 f-wrap-no a-items-center cart" wx:for-item="cart" wx:key="id" wx:for-items="{{carts}}">
@@ -33,7 +30,7 @@
           <text class="block">数量: {{cart.amount}}</text>
         </view>
         <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">
-          <text class="block">{{cart.product.price}}</text>
+          <text class="block">{{cart.product.sell_price}}</text>
         </view>
       </view>
 
@@ -58,14 +55,14 @@ export default class Pay extends wepy.page {
   }
   data = {
     carts: [],
-    address_books: [],
+    // address_books: [],
     address_book: {},
     pay: 0
   }
   methods = {
     editAddressBook: function () {
       wepy.navigateTo({
-        url: 'address_book?id=' + this.address_book.id
+        url: 'address_book'
       })
     },
     selectAddress: function (addressId) {
@@ -79,17 +76,25 @@ export default class Pay extends wepy.page {
         var timestamp = (new Date()).getTime().toString()
         var signA = 'appId=' + res.data.appid + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepay_id + '&signType=MD5&timeStamp=' + timestamp
         var signB = signA + '&key=a77105af5cf2346e6646abc55c3da026'
-        console.log(signB)
+        // console.log(signB)
         sign = MD5Util.MD5(signB).toUpperCase()
-        console.log(sign)
+        // console.log(sign)
         wepy.requestPayment({
           'timeStamp': timestamp,
           'nonceStr': res.data.nonce_str,
           'package': 'prepay_id=' + res.data.prepay_id,
           'signType': 'MD5',
           'paySign': sign,
-          'success': function(res) {
-            console.log(res)
+          'success': function(payRes) {
+            console.log(payRes)
+            wepy.showToast({
+              title: '支付成功',
+              icon: 'success',
+              duration: 2000
+            })
+            wepy.navigateTo({
+              url: `order?id=${res.data.id}`
+            })
           },
           'fail': function(res) {
             console.log(res)
@@ -98,11 +103,12 @@ export default class Pay extends wepy.page {
       })
     }
   }
-  onLoad (options) {
+  onShow (options) {
     this.loadShoppingCart()
     this.loadAddressBooks()
   }
   loadShoppingCart () {
+    this.pay = 0
     /* 加载 */
     wepy.showLoading({
       title: '努力加载中...'
@@ -122,7 +128,7 @@ export default class Pay extends wepy.page {
   loadAddressBooks () {
     AddressBookAPI.all().then((resp) => {
       if (resp.data) {
-        this.address_books = resp.data
+        this.address_book = resp.data[0]
         this.$apply()
       }
     })

@@ -16,11 +16,15 @@ const searchProduct = (value) => {
   return http.get(`/products?search=${value}`)
 }
 
-const all = () => {
+const all = (catalodId) => {
   // return new Promise((resolve, reject) => {
   //   resolve(sample)
   // })
-  return http.get('/products')
+  if (catalodId) {
+    return http.get('/products?catalog_id=' + catalodId)
+  } else {
+    return http.get('/products')
+  }
 }
 
 const find = (id) => {

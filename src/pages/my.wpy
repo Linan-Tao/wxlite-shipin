@@ -7,12 +7,25 @@
         <text class="text-block t-color-brown">{{userName}}</text>
       </view>
     </view>
-    <view class="d-flex f-wrap-no a-items-center justify-content-around m-t-25 t-size-35">
-      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">全部</text></view>
-      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">待付款</text></view>
-      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">已发货</text></view>
-      <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">已完成</text></view>
+    <text class="wrap">订单</text>
+    <view class="d-flex f-wrap-no a-items-center justify-content-around m-t-45 m-l-20 t-size-35">
+      <navigator url="orders" open-type="navigateTo" hover-class="navigator-hover">
+        <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">全部</text></view>
+      </navigator>
+      <navigator url="orders?status=open" open-type="navigateTo" hover-class="navigator-hover">
+        <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">待付款</text></view>
+      </navigator>
+      <navigator url="orders?status=paid" open-type="navigateTo" hover-class="navigator-hover">
+        <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">待发货</text></view>
+      </navigator>
+      <navigator url="orders?status=deliveried" open-type="navigateTo" hover-class="navigator-hover">
+        <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">已发货</text></view>
+      </navigator>
+      <navigator url="orders?status=completed" open-type="navigateTo" hover-class="navigator-hover">
+        <view class="f-grow-1 f-direction-column center"><text class="t-color-brown">已完成</text></view>
+      </navigator>
     </view>
+    <text class="wrap m-t-45">我的</text>
     <view class="content d-flex f-wrap-no a-items-center justify-content-center m-t-25 t-size-25">
       <view class="f-grow-1 f-direction-column center" bindtap="myDiscount">
         <image src="../images/cupons.png" mode="scaleToFill" class="icon text-block"></image>
@@ -111,5 +124,21 @@ export default class Cart extends wepy.page {
     margin-left: 50rpx;
     margin-top: 15rpx;
     display: block;
+  }
+  text.wrap{
+    display: table;
+    line-height: 32px;
+    // background-color: #fff;
+    white-space: nowrap;
+    border-spacing: 10px 0;
+  }
+  text.wrap:before,
+  text.wrap:after{
+    display: table-cell;
+    content: '';
+    width: 50%;
+    background: -webkit-linear-gradient(#ccc,#ccc) repeat-x left center;
+    background: linear-gradient(#ccc,#ccc) repeat-x left center;
+    background-size: 1px 1px;
   }
 </style>

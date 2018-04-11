@@ -1,0 +1,92 @@
+<template>
+  <view class="products-wrapper">
+    <view class="product" wx:for-items="{{products}}" wx:for-item="product" wx:for-index="index" wx:key="id">
+      <navigator url="{{'product?id='+product.id}}" open-type="navigateTo" hover-class="navigator-hover">
+        <view class="info-wrapper">
+          <view class="image">
+            <image mode="scaleToFill" src="{{product.first_image}}"></image>
+          </view>
+          <view class="info m-l-20">
+            <text class="name">{{product.name}}</text>
+            <text class="desc">{{product.description}}</text>
+            <text class="price align-content-end">￥{{product.sell_price}}</text>
+          </view>
+        </view>
+      </navigator>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import ProductAPI from '../api/products'
+export default class Products extends wepy.page {
+  config = {
+    navigationBarTitleText: '产品列表',
+    backgroundColor: '#eeeeee'
+  }
+  data = {
+    products: []
+  }
+  onShow () {
+    // console.log(this.$wxpage.options)
+    ProductAPI.all(this.$wxpage.options.catalog_id).then((resp) => {
+      this.products = resp.data.data
+      // console.log(this.products)
+      this.$apply()
+    })
+  }
+}
+</script>
+<style lang="less">
+  .products-wrapper {
+    .product {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 5rpx;
+      box-shadow: 5rpx 5rpx 3rpx #aaa;
+      &:not(:first-child) {
+        margin-top: 15rpx;
+      }
+      .info-wrapper {
+        display: flex;
+        .image {
+          width: 200rpx;
+          height: 200rpx;
+          background-color: gainsboro;
+          image {
+            border-top-left-radius: 5rpx;
+            border-bottom-left-radius: 5rpx;
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          .name {
+            align-self: flex-start;
+            color: rosybrown;
+            font-size: 40rpx;
+            font-weight: 600;
+            width: 200rpx;
+            height: 58rpx;
+            overflow: hidden;
+          }
+          .desc {
+            font-size: 0.7em;
+            display: block;
+            flex: auto;
+            align-self: auto;
+            max-height: 80rpx;
+            overflow: hidden;
+          }
+          .price {
+            align-self: flex-end;
+            color: rosybrown;
+            margin-right: 20rpx;
+          }
+        }
+      }
+    }
+  }
+</style>

@@ -14,7 +14,7 @@
         </view>
         <view class="content">
           <text class="productName m-t-25 m-l-30">{{product.name}}</text>
-          <text class="productPrice m-t-25 m-l-30">{{product.price}}</text>
+          <text class="productPrice m-t-25 m-l-30">{{product.sell_price}}</text>
         </view>
         <view class="text content productAttribute d-flex f-wrap-no a-items-center m-t-25">
           <view class="t-color-black text-block m-l-10 f-grow-1 a-self-stretch d-flex f-direction-column justify-content-center a-items-center">

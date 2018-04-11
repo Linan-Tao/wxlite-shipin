@@ -1,0 +1,185 @@
+<template>
+  <block>
+    <view class="head">
+      <text class="status">{{order.status}}</text>
+      <image class="icon" src="../images/order.png" />
+    </view>
+    <view class="address d-flex">
+      <image class="icon f-grow-1" src="../images/addree.png" />
+      <view class="f-grow-10">
+        <text>收货人: {{order.delivery_username}}</text>
+        <text>收货地址: {{order.delivery_address}}</text>
+      </view>
+    </view>
+    <view class="info-wrapper m-t-15" wx:for-items="{{order.order_products}}" wx:for-item="order_product" wx:for-index="product_index" wx:key="id">
+      <view class="image">
+        <image mode="scaleToFill" src="{{order_product.product.first_image}}"></image>
+      </view>
+      <view class="info m-l-20">
+        <text class="name">{{order_product.product.name}}</text>
+        <text class="desc">{{order_product.product.description}}</text>
+        <text class="price align-content-end">￥{{order_product.price}} </text>
+        <text class="price align-content-end">x {{order_product.amount}}</text>
+      </view>
+    </view>
+    <view class="m-t-25">
+      <text class="block">订单总价: {{order.price}}</text>
+      <text class="block m-t-25">订单编号:<text class="m-l-80">{{order.code}}</text></text>
+    </view>
+    <view class="footer d-flex" wx:if="{{order.status === '未支付'}}">
+      <text class="f-grow-5 m-l-20">应付: {{order.price}} 元</text>
+      <button type="primary" class="f-grow-1" bindtap="submitOrder">付款</button>
+    </view>
+  </block>
+</template>
+<script>
+import wepy from 'wepy'
+import OrderAPI from '../api/order'
+import MD5Util from '../libs/md5'
+export default class Order extends wepy.page {
+  data = {
+    order: {}
+  }
+  methods = {
+    submitOrder: function () {
+      OrderAPI.chargeOrder(this.order.id).then((res) => {
+        var sign = ''
+        console.log(res)
+        var timestamp = (new Date()).getTime().toString()
+        var signA = 'appId=' + res.data.appid + '&nonceStr=' + res.data.nonce_str + '&package=prepay_id=' + res.data.prepay_id + '&signType=MD5&timeStamp=' + timestamp
+        var signB = signA + '&key=a77105af5cf2346e6646abc55c3da026'
+        // console.log(signB)
+        sign = MD5Util.MD5(signB).toUpperCase()
+        // console.log(sign)
+        wepy.requestPayment({
+          'timeStamp': timestamp,
+          'nonceStr': res.data.nonce_str,
+          'package': 'prepay_id=' + res.data.prepay_id,
+          'signType': 'MD5',
+          'paySign': sign,
+          'success': function(payRes) {
+            console.log(payRes)
+            wepy.showToast({
+              title: '支付成功',
+              icon: 'success',
+              duration: 2000
+            })
+            wepy.navigateTo({
+              url: `order?id=${res.data.id}`
+            })
+          },
+          'fail': function(res) {
+            console.log(res)
+          }
+        })
+      })
+    }
+  }
+  onShow () {
+    let self = this
+    wepy.showLoading({
+      title: '加载中...'
+    })
+    OrderAPI.find(this.$wxpage.options.id).then((resp) => {
+      console.log(resp)
+      self.order = resp.data
+      self.$apply()
+      wepy.hideLoading()
+    })
+  }
+}
+</script>
+<style lang="less">
+  .head{
+    height: 200rpx;
+    width: 100%;
+    background-color: rgb(0, 183, 255);
+    .icon {
+      height: 100rpx;
+      width: 100rpx;
+      margin-left: 400rpx;
+      margin-top: 60rpx;
+    }
+    .status {
+      margin-left: 100rpx;
+      // margin-top: 30rpx;
+    }
+  }
+  .address {
+    margin-top: 20rpx;
+    .icon {
+      height: 80rpx;
+      width: 80rpx;
+    }
+    text {
+      display: block;
+    }
+  }
+  .info-wrapper {
+    display: flex;
+    background-color: #fff;
+    .image {
+      width: 200rpx;
+      height: 200rpx;
+      background-color: gainsboro;
+      image {
+        border-top-left-radius: 5rpx;
+        border-bottom-left-radius: 5rpx;
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      .name {
+        align-self: flex-start;
+        color: rosybrown;
+        font-size: 40rpx;
+        font-weight: 600;
+        width: 200rpx;
+        height: 58rpx;
+        overflow: hidden;
+      }
+      .desc {
+        font-size: 0.7em;
+        display: block;
+        flex: auto;
+        align-self: auto;
+        max-height: 80rpx;
+        overflow: hidden;
+      }
+      .price {
+        align-self: flex-end;
+        color: rosybrown;
+        margin-right: 20rpx;
+      }
+      .total {
+        align-self: flex-end;
+        margin-right: 20rpx;
+        font-size: 1em;
+      }
+    }
+  }
+  .footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 10rpx;
+    color: #fff;
+    text {
+      margin-left: 30rpx;
+      line-height: 70rpx;
+    }
+    button {
+      border-radius: unset;
+      margin: 0 30rpx 10rpx 10rpx;
+      &:after {
+        display: none;
+      }
+    }
+  }
+</style>

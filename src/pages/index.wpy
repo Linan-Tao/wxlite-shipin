@@ -30,7 +30,9 @@
             wx:key="id"
             wx:for-index="index"
             class="catalog-item">
-        {{catalog.name}}
+        <navigator url="{{'products?catalog_id='+catalog.id}}" open-type="navigateTo" hover-class="navigator-hover">
+          {{catalog.name}}
+        </navigator>
       </view>
     </view>
 
@@ -44,7 +46,7 @@
             <view class="info m-l-20">
               <text class="name">{{product.name}}</text>
               <text class="desc">{{product.description}}</text>
-              <text class="price align-content-end">￥{{product.price}}</text>
+              <text class="price align-content-end">￥{{product.sell_price}}</text>
             </view>
           </view>
         </navigator>
@@ -204,7 +206,7 @@
             flex-direction: column;
             .name {
               align-self: flex-start;
-              color: #D4579C;
+              color: rosybrown;
               font-size: 40rpx;
               font-weight: 600;
               width: 200rpx;
@@ -221,7 +223,7 @@
             }
             .price {
               align-self: flex-end;
-              color: #CC0000;
+              color: rosybrown;
               margin-right: 20rpx;
             }
           }
