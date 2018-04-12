@@ -57,7 +57,7 @@
 
 <script>
   import wepy from 'wepy'
-  import { login } from '../libs/login'
+  // import { login } from '../libs/login'
   import ProductAPI from '../api/products'
   // import CatalogAPI from '../api/catalog'
   import SettingApi from '../api/settings'
@@ -93,7 +93,7 @@
         this.$parent.globalData.my_banner = res.data.my_banner
       })
       this.refreshData()
-      login()
+      // login()
       wepy.getSystemInfo({
         success: (res) => {
           console.log('获取系统参数成功')

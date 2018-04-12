@@ -17,6 +17,7 @@ import 'wepy-async-function'
 
 import { setStore } from 'wepy-redux'
 import configStore from './store'
+import { login } from './libs/login'
 
 const store = configStore()
 setStore(store)
@@ -80,6 +81,7 @@ export default class extends wepy.app {
   onLaunch() {
     // this.testAsync()
     this.getUserInfo()
+    login()
     console.log(this.userInfo)
   }
 

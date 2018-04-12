@@ -57,7 +57,7 @@ export default class Cart extends wepy.page {
       } else if (this.selectedCarts.length === 0) {
         this.selectedFee = 0
       } else {
-        this.selectedFee = this.selectedCarts.reduce((prev, curr) => prev.price * prev.amount + curr.price * curr.amount)
+        this.selectedFee = this.selectedCarts.reduce((prev, curr) => prev.price + curr.price)
       }
       console.log(this.selectedCarts)
       this.$apply()
@@ -90,8 +90,10 @@ export default class Cart extends wepy.page {
           return
         }
         cart.amount -= 1
+        this.selectedFee -= product.sell_price
       } else if (operator === 'plus') {
         cart.amount += 1
+        this.selectedFee += product.sell_price
       }
       ShoppingCartAPI.editShoppingCart({product_id: product.id, amount: cart.amount}).then((resp) => {
         wepy.showToast({
