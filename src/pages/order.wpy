@@ -29,6 +29,7 @@
     <view class="footer d-flex" wx:if="{{order.status === '未支付'}}">
       <text class="f-grow-5 m-l-20">应付: {{order.price}} 元</text>
       <button type="primary" class="f-grow-1" bindtap="submitOrder">付款</button>
+      <button type="default" class="f-grow-1" bindtap="cancel()">取消</button>
     </view>
   </block>
 </template>
@@ -73,9 +74,18 @@ export default class Order extends wepy.page {
           }
         })
       })
+    },
+    cancel: function () {
+      OrderAPI.cancelOrder(this.order.id).then((res) => {
+        this.order = res.data
+        this.$apply()
+      })
     }
   }
   onShow () {
+    this.loadOrder()
+  }
+  loadOrder () {
     let self = this
     wepy.showLoading({
       title: '加载中...'

@@ -53,7 +53,7 @@ export default class Cart extends wepy.page {
         this.selectedCarts.splice(cartIndex, 1)
       }
       if (this.selectedCarts.length === 1) {
-        this.selectedFee = this.selectedCarts[0].price * this.selectedCarts[0].amount
+        this.selectedFee = this.selectedCarts[0].price
       } else if (this.selectedCarts.length === 0) {
         this.selectedFee = 0
       } else {

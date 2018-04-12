@@ -16,6 +16,9 @@ const createOrder = (options) => {
   return http.post(`/orders`, options)
 }
 
+const cancelOrder = (id) => {
+  return http.post(`/orders/${id}/cancel`)
+}
 
 const chargeOrder = (id) => {
   return http.post(`/orders/${id}/charge`)
@@ -26,6 +29,7 @@ export default {
   all,
   find,
   createOrder,
-  chargeOrder
+  chargeOrder,
+  cancelOrder
 }
 

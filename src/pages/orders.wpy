@@ -18,7 +18,8 @@
       </navigator>
       <text class="wrap">*</text>
       <view class="right" wx:if="{{order.status === '未支付'}}">
-        <button type="default" size="mini" bindtap="charge({{order}})"> 去支付 </button>
+        <button type="default" size="mini" bindtap="cancel({{order}})"> 取消 </button>
+        <button type="primary" size="mini" bindtap="charge({{order}})" class="m-l-20"> 去支付 </button>
       </view>
     </view>
     <text class="wrap" wx:if="{{orders.length == 0}}">暂无订单</text>
@@ -68,6 +69,11 @@ export default class Orders extends wepy.page {
             console.log(res)
           }
         })
+      })
+    },
+    cancel: function (order) {
+      OrderAPI.cancelOrder(order.id).then((res) => {
+        this.refreshData()
       })
     }
   }
